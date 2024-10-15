@@ -1,30 +1,40 @@
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 import { Form, Button } from "react-bootstrap";
 
+const formReducer = (state, action) => {
+  if (action.type === "NAME_CHANGE") {
+    return {
+      name: action.payload,
+      amount: state.amount,
+    };
+  }
+
+  if (action.type === "AMOUNT_CHANGE") {
+    return {
+      name: state.name,
+      amount: action.payload,
+    };
+  }
+
+  return initialState;
+};
+
+const initialState = {
+  name: "",
+  amount: 0,
+};
+
 const CreateArea = (props) => {
-  const [data, setData] = useState({
-    name: "",
-    amount: 0,
-  });
+  const [data, dispatch] = useReducer(formReducer, initialState);
 
   const nameChangeHandler = (e) => {
     const nameText = e.target.value;
 
-    setData((prevData) => {
-      return {
-        name: nameText,
-        amount: prevData.amount,
-      };
-    });
+    dispatch({ type: "NAME_CHANGE", payload: nameText });
   };
   const amountChangeHandler = (e) => {
     const amountText = e.target.value;
-    setData((prevData) => {
-      return {
-        name: prevData.name,
-        amount: amountText,
-      };
-    });
+    dispatch({ type: "AMOUNT_CHANGE", payload: amountText });
   };
 
   const submitHandler = (e) => {
